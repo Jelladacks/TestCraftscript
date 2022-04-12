@@ -19,8 +19,8 @@ importPackage(Packages.java.io);
 	clipboard = reader.read();
 }*/
 
-//오류확인
-context.checkArgs(1, 1, "<filename>");
+//check args (min,max, usage)
+context.checkArgs(2, 2, "<colortype> <buildtype>");
 var dir = player.getCardinalDirection();
 
 if (!dir.isCardinal()) {
@@ -47,15 +47,26 @@ var holder;
 
 var operation
 
-//클립보드에 저장
+//copy to user's clipboard
 /*
 var localSession = context.getSession();
 localSession.setClipboard(new ClipboardHolder(clipboard));
 */
 
-//붙여넣기
+//paste file
 function SolidorNot(string){
-	filepath = "D:\\install\\MineCraft\\NewForgeFiles\\config\\worldedit\\schematics\\" + argv[1] + "_" + string + ".schem";
+
+	if(argv[2].equals("road")){
+		filepath = "D:\\install\\MineCraft\\NewForgeFiles\\config\\worldedit\\schematics\\" + argv[1] + "_road_" + string + ".schem";
+	}
+	else if(argv[2].equals("station")){
+		filepath = "D:\\install\\MineCraft\\NewForgeFiles\\config\\worldedit\\schematics\\" + argv[1] + "_station.schem";
+	}
+	else{
+		filepath = "D:\\install\\MineCraft\\NewForgeFiles\\config\\worldedit\\schematics\\errormessage.schem";
+	}
+
+	
 	file = new File(filepath);
 	flinputstream = new FileInputStream(file);
 	format = ClipboardFormats.findByFile(file);
@@ -102,12 +113,20 @@ var smasks = new MaskUnion(new BlockCategoryMask(sess, BlockCategories.MINEABLE_
 
 );
 
+if(argv[2].equals("road")){
+	sess.setMask(fmasks);
+	SolidorNot("air");
+	sess.setMask(smasks);
+	SolidorNot("noair");
+	sess.setMask(null);
+}
+else if(argv[2].equals("station")){
+	SolidorNot("station");
+}
+else{
+	SolidorNot("errormessage");
+}
 
-sess.setMask(fmasks);
-SolidorNot("air");
-sess.setMask(smasks);
-SolidorNot("noair");
-sess.setMask(null);
 
 /*
 sess.setMask(new BlockCategoryMask(sess, BlockCategories.get("minecraft:replaceable_plants")));
@@ -122,15 +141,6 @@ sess.setMask(new BlockTypeMask(sess, BlockTypes.AIR, BlockTypes.CAVE_AIR, BlockT
 SolidorNot("air");
 sess.setMask(null);
 */
-
-
-
-
-
-
-
-
-
 
 
 
